@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>Intervalový časovač se zvukem</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    #timer {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+    input, button {
+      font-size: 18px;
+      padding: 5px 15px;
+      margin: 5px;
+    }
+    .preset-buttons button {
+      background-color: #eef;
+      border: 1px solid #88a;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Intervalový časovač</h1>
+
+  <!-- Přednastavené možnosti -->
+  <div class="preset-buttons">
+    <button onclick="setPreset(90, 15)">15× 90s</button>
+    <button onclick="setPreset(60, 15)">15× 60s</button>
+  </div>
+
+  <div>
+    Délka intervalu (sekundy): 
+    <input type="number" id="interval" value="30">
+  </div>
+  <div>
+    Počet opakování: 
+    <input type="number" id="repeats" value="5">
+  </div>
+
+  <div id="timer">00:00</div>
+  <div id="status">Připraveno</div>
+
+  <button onclick="startTimer()">Start</button>
+  <button onclick="stopTimer()">Stop</button>
+  <button onclick="resetTimer()">Reset</button>
+
+  <!-- Zvuky -->
+  <audio id="midSound">
+    <source src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" type="audio/ogg">
+  </audio>
+  <audio id="endSound">
+    <source src="https://actions.google.com/sounds/v1/alarms/bell_transition.ogg" type="audio/ogg">
+  </audio>
+
+  <script>
+    let intervalDuration = 0;
+    let totalRepeats = 0;
+    let currentRepeat = 0;
+    let remainingTime = 0;
+    let timerInterval;
+
+    function setPreset(seconds, repeats) {
+      document.getElementById('interval').value = seconds;
+      document.getElementById('repeats').value = repeats;
+    }
+
+    function formatTime(seconds) {
+      const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+      const s = String(seconds % 60).padStart(2, '0');
+      return `${m}:${s}`;
+    }
+
+    function updateDisplay() {
+      document.getElementById('timer').textContent = formatTime(remainingTime);
+      document.getElementById('status').textContent = `Opakování: ${currentRepeat} / ${totalRepeats}`;
+    }
+
+    function playSound(id) {
+      const sound = document.getElementById(id);
+      sound.currentTime = 0;
+      sound.play();
+    }
+
+    function startTimer() {
+      intervalDuration = parseInt(document.getElementById('interval').value);
+      totalRepeats = parseInt(document.getElementById('repeats').value);
+      if (isNaN(intervalDuration) || isNaN(totalRepeats) || intervalDuration <= 0 || totalRepeats <= 0) {
+        alert("Zadej platné hodnoty!");
+        return;
+      }
+      currentRepeat = 1;
+      remainingTime = intervalDuration;
+      updateDisplay();
+
+      timerInterval = setInterval(() => {
+        remainingTime--;
+        if (remainingTime <= 0) {
+          if (currentRepeat >= totalRepeats) {
+            clearInterval(timerInterval);
+            document.getElementById('status').textContent = "Hotovo!";
+            document.getElementById('timer').textContent = "00:00";
+            playSound('endSound');
+            alert("Hotovo!");
+          } else {
+            playSound('midSound');
+            currentRepeat++;
+            remainingTime = intervalDuration;
+          }
+        }
+        updateDisplay();
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      document.getElementById('timer').textContent = "00:00";
+      document.getElementById('status').textContent = "Připraveno";
+    }
+  </script>
+
+</body>
+</html>
