@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data-Age, s.r.o.</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    header {
+      background-color: #1a1a1a;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    nav {
+      background-color: #333;
+      color: white;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 10px 0;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    section {
+      padding: 40px 20px;
+      max-width: 1000px;
+      margin: auto;
+    }
+    .services {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: space-around;
+    }
+    .service {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      flex: 1 1 250px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .image-section img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    footer {
+      background-color: #1a1a1a;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+    }
+    .lang-switch {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .lang-switch a {
+      margin: 0 10px;
+      text-decoration: none;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Data-Age, s.r.o.</h1>
+    <p>Your trusted partner in software, AI, and cloud solutions</p>
+    <div class="lang-switch">
+      <a href="#en" onclick="switchLang('en')">English</a> |
+      <a href="#cz" onclick="switchLang('cz')">Česky</a>
+    </div>
+  </header>
+
+  <nav>
+    <a href="#about">About / O nás</a>
+    <a href="#services">Services / Služby</a>
+    <a href="#ev">E-Mobility</a>
+    <a href="#contact">Contact / Kontakt</a>
+  </nav>
+
+  <section id="about">
+    <h2><span class="en">About Us</span><span class="cz" style="display:none;">O nás</span></h2>
+    <p class="en">Data-Age, s.r.o. is a cutting-edge IT company delivering innovative technology solutions. We specialize in custom software development, artificial intelligence, and scalable cloud services for clients around the world.</p>
+    <p class="cz" style="display:none;">Data-Age, s.r.o. je moderní IT společnost poskytující inovativní technologická řešení. Specializujeme se na vývoj softwaru na míru, umělou inteligenci a škálovatelné cloudové služby pro klienty po celém světě.</p>
+  </section>
+
+  <section id="services">
+    <h2><span class="en">Our Services</span><span class="cz" style="display:none;">Naše služby</span></h2>
+    <div class="services">
+      <div class="service">
+        <h3><span class="en">Software Development</span><span class="cz" style="display:none;">Vývoj softwaru</span></h3>
+        <p class="en">Custom-built software solutions tailored to your business needs.</p>
+        <p class="cz" style="display:none;">Softwarová řešení na míru přizpůsobená potřebám vašeho podnikání.</p>
+      </div>
+      <div class="service">
+        <h3><span class="en">AI Solutions</span><span class="cz" style="display:none;">AI řešení</span></h3>
+        <p class="en">Intelligent systems that help automate, analyze, and optimize processes.</p>
+        <p class="cz" style="display:none;">Inteligentní systémy pro automatizaci, analýzu a optimalizaci procesů.</p>
+      </div>
+      <div class="service">
+        <h3><span class="en">Cloud Services</span><span class="cz" style="display:none;">Cloudové služby</span></h3>
+        <p class="en">Secure, scalable, and cost-effective cloud infrastructure and management.</p>
+        <p class="cz" style="display:none;">Bezpečná, škálovatelná a nákladově efektivní cloudová infrastruktura a správa.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="ev" class="image-section">
+    <h2><span class="en">E-Mobility Guarantee</span><span class="cz" style="display:none;">Záruka Elektromobilita</span></h2>
+    <img src="pic10.png" alt="E-Mobility Support" />
+  </section>
+
+  <section id="contact">
+    <h2><span class="en">Contact Us</span><span class="cz" style="display:none;">Kontaktujte nás</span></h2>
+    <p>Email: info@data-age.cz</p>
+    <p><span class="en">Address: Slavíkova 1190/18, Prague 3, 130 00, Czech Republic</span><span class="cz" style="display:none;">Adresa: Slavíkova 1190/18, Praha 3, 130 00, Česká republika</span></p>
+    <p><span class="en">Company ID (IČO): 14109913<br>VAT ID (DIČ): CZ14109913</span><span class="cz" style="display:none;">IČO: 14109913<br>DIČ: CZ14109913</span></p>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Data-Age, s.r.o. All rights reserved.</p>
+  </footer>
+
+  <script>
+    function switchLang(lang) {
+      document.querySelectorAll('.en').forEach(e => e.style.display = lang === 'en' ? 'inline' : 'none');
+      document.querySelectorAll('.cz').forEach(e => e.style.display = lang === 'cz' ? 'inline' : 'none');
+    }
+  </script>
+</body>
+</html>
