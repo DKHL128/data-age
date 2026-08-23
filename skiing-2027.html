@@ -11,8 +11,8 @@
     --green: #166644;
     --green-bg: #DAEDe3;
     --border: #C3D1E8;
-    --price-list: #8A9DB8;
-    --price-net: #2457A0;
+    --price-a: #2457A0;
+    --price-b: #2457A0;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -25,8 +25,8 @@
       --green: #29A870;
       --green-bg: #0B281A;
       --border: #1C3050;
-      --price-list: #476080;
-      --price-net: #5889D6;
+      --price-a: #5889D6;
+      --price-b: #5889D6;
     }
   }
 
@@ -39,8 +39,8 @@
     --green: #29A870;
     --green-bg: #0B281A;
     --border: #1C3050;
-    --price-list: #476080;
-    --price-net: #5889D6;
+    --price-a: #5889D6;
+    --price-b: #5889D6;
   }
 
   *, *::before, *::after {
@@ -67,7 +67,7 @@
 
   /* ======================== Page Header ======================== */
   .page-header {
-    max-width: 860px;
+    max-width: 920px;
     margin: 0 auto;
     padding: 44px 28px 28px;
     border-bottom: 1px solid var(--border);
@@ -127,38 +127,9 @@
     color: var(--text);
   }
 
-  /* ======================== Price Legend ======================== */
-  .price-legend {
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 10px 28px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    font-size: 11px;
-    color: var(--text-muted);
-  }
-
-  .legend-key {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-
-  .legend-mark {
-    width: 16px;
-    height: 2px;
-    border-radius: 1px;
-    flex-shrink: 0;
-  }
-
-  .legend-mark.lm-list { background: var(--price-list); }
-  .legend-mark.lm-net  { background: var(--price-net); }
-
   /* ======================== Main ======================== */
   .main {
-    max-width: 860px;
+    max-width: 920px;
     margin: 0 auto;
     padding: 0 28px;
   }
@@ -194,30 +165,59 @@
   /* ======================== Cards ======================== */
   .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
   }
 
   .card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 7px;
-    padding: 18px 20px;
+    border-radius: 8px;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    gap: 13px;
     transition: border-color 0.15s, box-shadow 0.15s;
   }
 
   .card:hover {
     border-color: var(--accent);
-    box-shadow: 0 2px 14px rgba(36, 87, 160, 0.07);
+    box-shadow: 0 3px 16px rgba(36, 87, 160, 0.08);
+  }
+
+  /* Image */
+  .card-image {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    background: var(--bg);
+  }
+
+  .card-image-placeholder {
+    width: 100%;
+    height: 170px;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+
+  /* Card body */
+  .card-body {
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
   }
 
   .card-name {
     font-size: 14px;
     font-weight: 500;
-    line-height: 1.35;
+    line-height: 1.3;
     color: var(--text);
   }
 
@@ -239,54 +239,57 @@
 
   /* Prices */
   .card-prices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .price-divider {
+    width: 1px;
+    background: var(--border);
+    align-self: stretch;
+    display: none; /* use gap instead */
+  }
+
+  .price-item {
     display: flex;
-    gap: 24px;
-    align-items: flex-end;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .price-item + .price-item {
+    padding-left: 10px;
+    border-left: 1px solid var(--border);
   }
 
   .price-label {
     font-size: 9.5px;
     font-weight: 600;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
     color: var(--text-muted);
-    margin-bottom: 2px;
   }
 
   .price-amount {
+    font-size: 20px;
+    font-weight: 600;
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.02em;
-    line-height: 1;
-  }
-
-  .price-amount.is-list {
-    font-size: 15px;
-    font-weight: 400;
-    color: var(--price-list);
-    text-decoration: line-through;
-  }
-
-  .price-amount.is-net {
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--price-net);
+    line-height: 1.1;
+    color: var(--price-a);
   }
 
   .price-unit {
     font-size: 11px;
     font-weight: 400;
     letter-spacing: 0;
-    opacity: 0.65;
+    opacity: 0.6;
     margin-left: 1px;
   }
 
   /* Footer */
   .card-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    flex-wrap: wrap;
+    margin-top: auto;
   }
 
   .skippass-badge {
@@ -308,20 +311,9 @@
     font-weight: 700;
   }
 
-  .savings-note {
-    font-size: 11px;
-    color: var(--text-muted);
-  }
-
-  .savings-amount {
-    font-weight: 600;
-    color: var(--green);
-  }
-
   /* ======================== Responsive ======================== */
-  @media (max-width: 580px) {
+  @media (max-width: 600px) {
     .page-header,
-    .price-legend,
     .main { padding-left: 16px; padding-right: 16px; }
 
     .cards { grid-template-columns: 1fr; }
@@ -344,12 +336,12 @@
       <span class="detail-value">27. 2. — 6. 3. 2027</span>
     </div>
     <div class="trip-detail">
-      <span class="detail-label">Obsazení</span>
-      <span class="detail-value">4 dospělí + 5 dětí</span>
+      <span class="detail-label">Pokoj A</span>
+      <span class="detail-value">2 dospělí + 3 děti (5, 9, 10 let)</span>
     </div>
     <div class="trip-detail">
-      <span class="detail-label">Konfigurace</span>
-      <span class="detail-value">2 × apartmán</span>
+      <span class="detail-label">Pokoj B</span>
+      <span class="detail-value">2 dospělí + 2 děti (9, 11 let)</span>
     </div>
     <div class="trip-detail">
       <span class="detail-label">Portál</span>
@@ -357,12 +349,6 @@
     </div>
   </div>
 </header>
-
-<div class="price-legend">
-  <span>Ceny celkem za pobyt:</span>
-  <span class="legend-key"><span class="legend-mark lm-list"></span>Katalogová cena</span>
-  <span class="legend-key"><span class="legend-mark lm-net"></span>Cena po slevě NevDama</span>
-</div>
 
 <main class="main">
 
@@ -375,68 +361,74 @@
     <div class="cards">
 
       <article class="card">
-        <div class="card-name">
-          <a class="card-link" href="https://www.nev-dama.cz/zima/italie/dolomiti-superski/rio-pusteria-bressanone-valle-isarco/appartements-alpine-waldheim?KEY=19659%7C19657&DS=8&HID=7216&PF=90000&PT=130000&MT=-1&MMT=5%7C6%7C3%7C2%7C1&DI=BS&RCS=%7C&NN=7&MNN=6%7C7&NNM=6%7C7&DF=2027-02-27%7C2027-03-06&RD=2027-03-06&DD=2027-02-27&ERM=0&AC1=2&KC1=3&KA1=5%7C9%7C10&IC1=0&AC2=2&KC2=2&KA2=9%7C11&IC2=0&TO=4333&TT=3&PID=7216&DPR=NevDama&ILM=0&IFM=0" target="_blank" rel="noopener">
-            Appartements Alpine Waldheim <span class="link-arrow">↗</span>
-          </a>
-        </div>
-        <div class="card-prices">
-          <div>
-            <div class="price-label">Katalogová</div>
-            <div class="price-amount is-list">69&nbsp;736<span class="price-unit"> Kč</span></div>
+        <img class="card-image" src="https://img.nev-dama.cz/kapacity/7216/01_IT_ValleIsarco_Waldheim_ext02_n_779x519.jpg" alt="Appartements Alpine Waldheim" loading="lazy">
+        <div class="card-body">
+          <div class="card-name">
+            <a class="card-link" href="https://www.nev-dama.cz/zima/italie/dolomiti-superski/rio-pusteria-bressanone-valle-isarco/appartements-alpine-waldheim?KEY=19659%7C19657&DS=8&HID=7216&PF=90000&PT=130000&MT=-1&MMT=5%7C6%7C3%7C2%7C1&DI=BS&RCS=%7C&NN=7&MNN=6%7C7&NNM=6%7C7&DF=2027-02-27%7C2027-03-06&RD=2027-03-06&DD=2027-02-27&ERM=0&AC1=2&KC1=3&KA1=5%7C9%7C10&IC1=0&AC2=2&KC2=2&KA2=9%7C11&IC2=0&TO=4333&TT=3&PID=7216&DPR=NevDama&ILM=0&IFM=0" target="_blank" rel="noopener">
+              Appartements Alpine Waldheim <span class="link-arrow">↗</span>
+            </a>
           </div>
-          <div>
-            <div class="price-label">Po slevě</div>
-            <div class="price-amount is-net">55&nbsp;715<span class="price-unit"> Kč</span></div>
+          <div class="card-prices">
+            <div class="price-item">
+              <div class="price-label">2 dos. + 3 děti</div>
+              <div class="price-amount">69&nbsp;736<span class="price-unit"> Kč</span></div>
+            </div>
+            <div class="price-item">
+              <div class="price-label">2 dos. + 2 děti</div>
+              <div class="price-amount">55&nbsp;715<span class="price-unit"> Kč</span></div>
+            </div>
           </div>
-        </div>
-        <div class="card-footer">
-          <span class="skippass-badge"><span class="check">✓</span> 6 dní skippass v ceně</span>
-          <span class="savings-note">úspora <span class="savings-amount">14&nbsp;021 Kč</span></span>
+          <div class="card-footer">
+            <span class="skippass-badge"><span class="check">✓</span> 6 dní skippass v ceně</span>
+          </div>
         </div>
       </article>
 
       <article class="card">
-        <div class="card-name">
-          <a class="card-link" href="https://www.nev-dama.cz/zima/italie/dolomiti-superski/rio-pusteria-bressanone-valle-isarco/apartmany-bergblick?AC1=2&AC2=2&DD=2027-02-27&DI=BS&DPR=NevDama&DS=8&HID=10589&IC1=0&IC2=0&IFM=0&ILM=0&KA1=5|9|10&KA2=9|11&KC1=3&KC2=2&KEY=50631|50778&MMT=5|6|3|2|1&MNN=6|7&MT=-1&NN=6&PF=90000&PID=10589&PT=130000&RCS=|&RD=2027-03-05&TO=4333&acm1=2&acm2=2&df=2027-02-27|2027-03-06&icm1=0&icm2=0&kam1=5|9|10&kam2=9|11&kcm1=3&kcm2=2&nnm=6|7&nrd=0&ptm=0&tt=3&ttm=0#/prehled" target="_blank" rel="noopener">
-            Apartmány Bergblick <span class="link-arrow">↗</span>
-          </a>
-        </div>
-        <div class="card-prices">
-          <div>
-            <div class="price-label">Katalogová</div>
-            <div class="price-amount is-list">65&nbsp;835<span class="price-unit"> Kč</span></div>
+        <img class="card-image" src="https://img.nev-dama.cz/kapacity/10589/01_IT_RioPusteria_Bergblick_ext01_n_779x519.jpg" alt="Apartmány Bergblick" loading="lazy">
+        <div class="card-body">
+          <div class="card-name">
+            <a class="card-link" href="https://www.nev-dama.cz/zima/italie/dolomiti-superski/rio-pusteria-bressanone-valle-isarco/apartmany-bergblick?AC1=2&AC2=2&DD=2027-02-27&DI=BS&DPR=NevDama&DS=8&HID=10589&IC1=0&IC2=0&IFM=0&ILM=0&KA1=5|9|10&KA2=9|11&KC1=3&KC2=2&KEY=50631|50778&MMT=5|6|3|2|1&MNN=6|7&MT=-1&NN=6&PF=90000&PID=10589&PT=130000&RCS=|&RD=2027-03-05&TO=4333&acm1=2&acm2=2&df=2027-02-27|2027-03-06&icm1=0&icm2=0&kam1=5|9|10&kam2=9|11&kcm1=3&kcm2=2&nnm=6|7&nrd=0&ptm=0&tt=3&ttm=0#/prehled" target="_blank" rel="noopener">
+              Apartmány Bergblick <span class="link-arrow">↗</span>
+            </a>
           </div>
-          <div>
-            <div class="price-label">Po slevě</div>
-            <div class="price-amount is-net">55&nbsp;632<span class="price-unit"> Kč</span></div>
+          <div class="card-prices">
+            <div class="price-item">
+              <div class="price-label">2 dos. + 3 děti</div>
+              <div class="price-amount">65&nbsp;835<span class="price-unit"> Kč</span></div>
+            </div>
+            <div class="price-item">
+              <div class="price-label">2 dos. + 2 děti</div>
+              <div class="price-amount">55&nbsp;632<span class="price-unit"> Kč</span></div>
+            </div>
           </div>
-        </div>
-        <div class="card-footer">
-          <span class="skippass-badge"><span class="check">✓</span> 6 dní skippass v ceně</span>
-          <span class="savings-note">úspora <span class="savings-amount">10&nbsp;203 Kč</span></span>
+          <div class="card-footer">
+            <span class="skippass-badge"><span class="check">✓</span> 6 dní skippass v ceně</span>
+          </div>
         </div>
       </article>
 
       <article class="card">
-        <div class="card-name">
-          <a class="card-link" href="https://www.nev-dama.cz/zima/italie/dolomiti-superski/rio-pusteria-bressanone-valle-isarco/plose-parkhotel-residence?AC1=2&AC2=2&DD=2027-02-27&DI=BS&DPR=NevDama&DS=8&HID=1433&IC1=0&IC2=0&IFM=0&ILM=0&KA1=5|9|10&KA2=9|11&KC1=3&KC2=2&KEY=56621|56620&MMT=5|6|3|2|1&MNN=6|7&MT=-1&NN=6&PF=90000&PID=1433&PT=130000&RCS=|&RD=2027-03-05&TO=4333&acm1=2&acm2=2&df=2027-02-27|2027-03-06&icm1=0&icm2=0&kam1=5|9|10&kam2=9|11&kcm1=3&kcm2=2&nnm=6|7&nrd=0&ptm=0&tt=3&ttm=0#/prehled" target="_blank" rel="noopener">
-            Plose Parkhotel — Residence <span class="link-arrow">↗</span>
-          </a>
-        </div>
-        <div class="card-prices">
-          <div>
-            <div class="price-label">Katalogová</div>
-            <div class="price-amount is-list">60&nbsp;300<span class="price-unit"> Kč</span></div>
+        <img class="card-image" src="https://img.nev-dama.cz/kapacity/1433/01_IT_RioPusteria_Plose_ext01_n_779x519.jpg" alt="Plose Parkhotel – Residence" loading="lazy">
+        <div class="card-body">
+          <div class="card-name">
+            <a class="card-link" href="https://www.nev-dama.cz/zima/italie/dolomiti-superski/rio-pusteria-bressanone-valle-isarco/plose-parkhotel-residence?AC1=2&AC2=2&DD=2027-02-27&DI=BS&DPR=NevDama&DS=8&HID=1433&IC1=0&IC2=0&IFM=0&ILM=0&KA1=5|9|10&KA2=9|11&KC1=3&KC2=2&KEY=56621|56620&MMT=5|6|3|2|1&MNN=6|7&MT=-1&NN=6&PF=90000&PID=1433&PT=130000&RCS=|&RD=2027-03-05&TO=4333&acm1=2&acm2=2&df=2027-02-27|2027-03-06&icm1=0&icm2=0&kam1=5|9|10&kam2=9|11&kcm1=3&kcm2=2&nnm=6|7&nrd=0&ptm=0&tt=3&ttm=0#/prehled" target="_blank" rel="noopener">
+              Plose Parkhotel — Residence <span class="link-arrow">↗</span>
+            </a>
           </div>
-          <div>
-            <div class="price-label">Po slevě</div>
-            <div class="price-amount is-net">58&nbsp;560<span class="price-unit"> Kč</span></div>
+          <div class="card-prices">
+            <div class="price-item">
+              <div class="price-label">2 dos. + 3 děti</div>
+              <div class="price-amount">60&nbsp;300<span class="price-unit"> Kč</span></div>
+            </div>
+            <div class="price-item">
+              <div class="price-label">2 dos. + 2 děti</div>
+              <div class="price-amount">58&nbsp;560<span class="price-unit"> Kč</span></div>
+            </div>
           </div>
-        </div>
-        <div class="card-footer">
-          <span class="skippass-badge"><span class="check">✓</span> 6 dní skippass v ceně</span>
-          <span class="savings-note">úspora <span class="savings-amount">1&nbsp;740 Kč</span></span>
+          <div class="card-footer">
+            <span class="skippass-badge"><span class="check">✓</span> 6 dní skippass v ceně</span>
+          </div>
         </div>
       </article>
 
@@ -452,24 +444,26 @@
     <div class="cards">
 
       <article class="card">
-        <div class="card-name">
-          <a class="card-link" href="https://www.nev-dama.cz/zima/italie/valtellina/madesimo/apartmany-oriental?KEY=33803%7C33802&DS=8&HID=6202&MT=-1&MMT=5%7C6%7C3%7C2%7C1&DI=BS&RCS=%7C&NN=7&MNN=6%7C7&NNM=6%7C7&DF=2027-02-27%7C2027-03-06&RD=2027-03-06&DD=2027-02-27&ERM=0&AC1=2&KC1=3&KA1=5%7C9%7C10&IC1=0&AC2=2&KC2=2&KA2=9%7C11&IC2=0&TO=4333&TT=3&PID=6202&DPR=NevDama&ILM=0&IFM=0" target="_blank" rel="noopener">
-            Apartmány Oriental <span class="link-arrow">↗</span>
-          </a>
-        </div>
-        <div class="card-prices">
-          <div>
-            <div class="price-label">Katalogová</div>
-            <div class="price-amount is-list">42&nbsp;892<span class="price-unit"> Kč</span></div>
+        <img class="card-image" src="https://img.nev-dama.cz/kapacity/6202/01_IT_Madesimo_AptOriental_ext01_n_779x519.jpg" alt="Apartmány Oriental" loading="lazy">
+        <div class="card-body">
+          <div class="card-name">
+            <a class="card-link" href="https://www.nev-dama.cz/zima/italie/valtellina/madesimo/apartmany-oriental?KEY=33803%7C33802&DS=8&HID=6202&MT=-1&MMT=5%7C6%7C3%7C2%7C1&DI=BS&RCS=%7C&NN=7&MNN=6%7C7&NNM=6%7C7&DF=2027-02-27%7C2027-03-06&RD=2027-03-06&DD=2027-02-27&ERM=0&AC1=2&KC1=3&KA1=5%7C9%7C10&IC1=0&AC2=2&KC2=2&KA2=9%7C11&IC2=0&TO=4333&TT=3&PID=6202&DPR=NevDama&ILM=0&IFM=0" target="_blank" rel="noopener">
+              Apartmány Oriental <span class="link-arrow">↗</span>
+            </a>
           </div>
-          <div>
-            <div class="price-label">Po slevě</div>
-            <div class="price-amount is-net">41&nbsp;762<span class="price-unit"> Kč</span></div>
+          <div class="card-prices">
+            <div class="price-item">
+              <div class="price-label">2 dos. + 3 děti</div>
+              <div class="price-amount">42&nbsp;892<span class="price-unit"> Kč</span></div>
+            </div>
+            <div class="price-item">
+              <div class="price-label">2 dos. + 2 děti</div>
+              <div class="price-amount">41&nbsp;762<span class="price-unit"> Kč</span></div>
+            </div>
           </div>
-        </div>
-        <div class="card-footer">
-          <span class="skippass-badge"><span class="check">✓</span> 6 dní skippass v ceně</span>
-          <span class="savings-note">úspora <span class="savings-amount">1&nbsp;130 Kč</span></span>
+          <div class="card-footer">
+            <span class="skippass-badge"><span class="check">✓</span> 6 dní skippass v ceně</span>
+          </div>
         </div>
       </article>
 
@@ -485,68 +479,74 @@
     <div class="cards">
 
       <article class="card">
-        <div class="card-name">
-          <a class="card-link" href="https://www.nev-dama.cz/zima/italie/dolomiti-superski/val-di-fiemme-obereggen/chalet-la-stua?KEY=45522%7C45521&DS=8&HID=12005&PF=0&PT=130000&MT=-1&MMT=5%7C6%7C3%7C2%7C1&DI=BS&RCS=%7C&NN=6&MNN=6%7C7&NNM=6%7C7&DF=2027-02-27%7C2027-03-06&RD=2027-03-06&DD=2027-02-28&ERM=0&AC1=2&KC1=3&KA1=5%7C9%7C10&IC1=0&AC2=2&KC2=2&KA2=9%7C11&IC2=0&TO=4333&TT=3&PID=12005&DPR=NevDama&ILM=0&IFM=0" target="_blank" rel="noopener">
-            Chalet La Stua <span class="link-arrow">↗</span>
-          </a>
-        </div>
-        <div class="card-prices">
-          <div>
-            <div class="price-label">Katalogová</div>
-            <div class="price-amount is-list">59&nbsp;185<span class="price-unit"> Kč</span></div>
+        <img class="card-image" src="https://img.nev-dama.cz/kapacity/12005/01_IT_Fiemme_LaStua_ext01_n_779x519.jpg" alt="Chalet La Stua" loading="lazy">
+        <div class="card-body">
+          <div class="card-name">
+            <a class="card-link" href="https://www.nev-dama.cz/zima/italie/dolomiti-superski/val-di-fiemme-obereggen/chalet-la-stua?KEY=45522%7C45521&DS=8&HID=12005&PF=0&PT=130000&MT=-1&MMT=5%7C6%7C3%7C2%7C1&DI=BS&RCS=%7C&NN=6&MNN=6%7C7&NNM=6%7C7&DF=2027-02-27%7C2027-03-06&RD=2027-03-06&DD=2027-02-28&ERM=0&AC1=2&KC1=3&KA1=5%7C9%7C10&IC1=0&AC2=2&KC2=2&KA2=9%7C11&IC2=0&TO=4333&TT=3&PID=12005&DPR=NevDama&ILM=0&IFM=0" target="_blank" rel="noopener">
+              Chalet La Stua <span class="link-arrow">↗</span>
+            </a>
           </div>
-          <div>
-            <div class="price-label">Po slevě</div>
-            <div class="price-amount is-net">55&nbsp;632<span class="price-unit"> Kč</span></div>
+          <div class="card-prices">
+            <div class="price-item">
+              <div class="price-label">2 dos. + 3 děti</div>
+              <div class="price-amount">59&nbsp;185<span class="price-unit"> Kč</span></div>
+            </div>
+            <div class="price-item">
+              <div class="price-label">2 dos. + 2 děti</div>
+              <div class="price-amount">55&nbsp;632<span class="price-unit"> Kč</span></div>
+            </div>
           </div>
-        </div>
-        <div class="card-footer">
-          <span class="skippass-badge"><span class="check">✓</span> 6 dní skippass v ceně</span>
-          <span class="savings-note">úspora <span class="savings-amount">3&nbsp;553 Kč</span></span>
+          <div class="card-footer">
+            <span class="skippass-badge"><span class="check">✓</span> 6 dní skippass v ceně</span>
+          </div>
         </div>
       </article>
 
       <article class="card">
-        <div class="card-name">
-          <a class="card-link" href="https://www.nev-dama.cz/zima/italie/dolomiti-superski/val-di-fiemme-obereggen/aparthotel-villa-di-bosco?KEY=26669%7C26668&DS=8&HID=8337&PF=0&PT=130000&MT=-1&MMT=5%7C6%7C3%7C2%7C1&DI=BS&RCS=%7C&NN=6&MNN=6%7C7&NNM=6%7C7&DF=2027-02-27%7C2027-03-06&RD=2027-03-06&DD=2027-02-28&ERM=0&AC1=2&KC1=3&KA1=5%7C9%7C10&IC1=0&AC2=2&KC2=2&KA2=9%7C11&IC2=0&TO=4333&TT=3&PID=8337&DPR=NevDama&ILM=0&IFM=0#/prehled" target="_blank" rel="noopener">
-            Aparthotel Villa di Bosco <span class="link-arrow">↗</span>
-          </a>
-        </div>
-        <div class="card-prices">
-          <div>
-            <div class="price-label">Katalogová</div>
-            <div class="price-amount is-list">74&nbsp;800<span class="price-unit"> Kč</span></div>
+        <img class="card-image" src="https://img.nev-dama.cz/kapacity/8337/01_IT_Fiemme_Bosco_ext01_n_779x519.jpg" alt="Aparthotel Villa di Bosco" loading="lazy">
+        <div class="card-body">
+          <div class="card-name">
+            <a class="card-link" href="https://www.nev-dama.cz/zima/italie/dolomiti-superski/val-di-fiemme-obereggen/aparthotel-villa-di-bosco?KEY=26669%7C26668&DS=8&HID=8337&PF=0&PT=130000&MT=-1&MMT=5%7C6%7C3%7C2%7C1&DI=BS&RCS=%7C&NN=6&MNN=6%7C7&NNM=6%7C7&DF=2027-02-27%7C2027-03-06&RD=2027-03-06&DD=2027-02-28&ERM=0&AC1=2&KC1=3&KA1=5%7C9%7C10&IC1=0&AC2=2&KC2=2&KA2=9%7C11&IC2=0&TO=4333&TT=3&PID=8337&DPR=NevDama&ILM=0&IFM=0#/prehled" target="_blank" rel="noopener">
+              Aparthotel Villa di Bosco <span class="link-arrow">↗</span>
+            </a>
           </div>
-          <div>
-            <div class="price-label">Po slevě</div>
-            <div class="price-amount is-net">56&nbsp;582<span class="price-unit"> Kč</span></div>
+          <div class="card-prices">
+            <div class="price-item">
+              <div class="price-label">2 dos. + 3 děti</div>
+              <div class="price-amount">74&nbsp;800<span class="price-unit"> Kč</span></div>
+            </div>
+            <div class="price-item">
+              <div class="price-label">2 dos. + 2 děti</div>
+              <div class="price-amount">56&nbsp;582<span class="price-unit"> Kč</span></div>
+            </div>
           </div>
-        </div>
-        <div class="card-footer">
-          <span class="skippass-badge"><span class="check">✓</span> 6 dní skippass v ceně</span>
-          <span class="savings-note">úspora <span class="savings-amount">18&nbsp;218 Kč</span></span>
+          <div class="card-footer">
+            <span class="skippass-badge"><span class="check">✓</span> 6 dní skippass v ceně</span>
+          </div>
         </div>
       </article>
 
       <article class="card">
-        <div class="card-name">
-          <a class="card-link" href="https://www.nev-dama.cz/zima/italie/dolomiti-superski/val-di-fiemme-obereggen/residence-montebel?AC1=2&AC2=2&DD=2027-02-27&DI=BS&DPR=NevDama&DS=8&HID=1394&IC1=0&IC2=0&IFM=0&ILM=0&KA1=5|9|10&KA2=9|11&KC1=3&KC2=2&KEY=39782|39781&MMT=5|6|3|2|1&MNN=6|7&MT=-1&NN=7&PF=0&PID=1394&PT=130000&RCS=|&RD=2027-03-06&TO=4333&acm1=2&acm2=2&df=2027-02-27|2027-03-06&icm1=0&icm2=0&kam1=5|9|10&kam2=9|11&kcm1=3&kcm2=2&nnm=6|7&nrd=0&ptm=0&tt=3&ttm=0#/prehled" target="_blank" rel="noopener">
-            Residence Montebel <span class="link-arrow">↗</span>
-          </a>
-        </div>
-        <div class="card-prices">
-          <div>
-            <div class="price-label">Katalogová</div>
-            <div class="price-amount is-list">60&nbsp;610<span class="price-unit"> Kč</span></div>
+        <img class="card-image" src="https://img.nev-dama.cz/kapacity/1394/01_IT_Fiemme_Montebel_ext01_n_779x519.jpg" alt="Residence Montebel" loading="lazy">
+        <div class="card-body">
+          <div class="card-name">
+            <a class="card-link" href="https://www.nev-dama.cz/zima/italie/dolomiti-superski/val-di-fiemme-obereggen/residence-montebel?AC1=2&AC2=2&DD=2027-02-27&DI=BS&DPR=NevDama&DS=8&HID=1394&IC1=0&IC2=0&IFM=0&ILM=0&KA1=5|9|10&KA2=9|11&KC1=3&KC2=2&KEY=39782|39781&MMT=5|6|3|2|1&MNN=6|7&MT=-1&NN=7&PF=0&PID=1394&PT=130000&RCS=|&RD=2027-03-06&TO=4333&acm1=2&acm2=2&df=2027-02-27|2027-03-06&icm1=0&icm2=0&kam1=5|9|10&kam2=9|11&kcm1=3&kcm2=2&nnm=6|7&nrd=0&ptm=0&tt=3&ttm=0#/prehled" target="_blank" rel="noopener">
+              Residence Montebel <span class="link-arrow">↗</span>
+            </a>
           </div>
-          <div>
-            <div class="price-label">Po slevě</div>
-            <div class="price-amount is-net">57&nbsp;532<span class="price-unit"> Kč</span></div>
+          <div class="card-prices">
+            <div class="price-item">
+              <div class="price-label">2 dos. + 3 děti</div>
+              <div class="price-amount">60&nbsp;610<span class="price-unit"> Kč</span></div>
+            </div>
+            <div class="price-item">
+              <div class="price-label">2 dos. + 2 děti</div>
+              <div class="price-amount">57&nbsp;532<span class="price-unit"> Kč</span></div>
+            </div>
           </div>
-        </div>
-        <div class="card-footer">
-          <span class="skippass-badge"><span class="check">✓</span> 6 dní skippass v ceně</span>
-          <span class="savings-note">úspora <span class="savings-amount">3&nbsp;078 Kč</span></span>
+          <div class="card-footer">
+            <span class="skippass-badge"><span class="check">✓</span> 6 dní skippass v ceně</span>
+          </div>
         </div>
       </article>
 
