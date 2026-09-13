@@ -2,8 +2,14 @@
 <html lang="cs">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Time</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Time">
+<meta name="theme-color" content="#14171a">
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Time%22%2C%22short_name%22%3A%22Time%22%2C%22display%22%3A%22standalone%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%2314171a%22%2C%22theme_color%22%3A%22%2314171a%22%7D">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=Manrope:wght@500;600;700;800&display=swap">
 <style>
   :root{
@@ -101,6 +107,8 @@
     cursor:pointer;
   }
   .reset-btn:hover{ color:var(--text); border-color:var(--muted); }
+  .topbar-actions{ display:flex; align-items:center; gap:8px; }
+  #fullscreenBtn{ font-size:15px; line-height:1; padding:6px 9px; }
 
   .progress-panel[hidden]{ display:none; }
   .progress-panel{
@@ -381,7 +389,10 @@
 <div class="app">
   <div class="topbar">
     <h1>Time</h1>
-    <button class="reset-btn" id="resetBtn">Reset</button>
+    <div class="topbar-actions">
+      <button class="reset-btn" id="fullscreenBtn" hidden aria-label="Celá obrazovka">⛶</button>
+      <button class="reset-btn" id="resetBtn">Reset</button>
+    </div>
   </div>
 
   <div class="progress-panel" id="progressPanel" hidden>
@@ -1181,6 +1192,18 @@
   }
   document.getElementById("resetBtn").addEventListener("click", fullReset);
   document.getElementById("restartBtn").addEventListener("click", fullReset);
+
+  const fullscreenBtn = document.getElementById("fullscreenBtn");
+  if(document.documentElement.requestFullscreen && document.fullscreenEnabled){
+    fullscreenBtn.hidden = false;
+    fullscreenBtn.addEventListener("click", () => {
+      if(document.fullscreenElement){
+        document.exitFullscreen();
+      } else {
+        document.documentElement.requestFullscreen().catch(() => {});
+      }
+    });
+  }
 
   showScreen("select");
 </script>
