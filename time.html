@@ -449,7 +449,7 @@
           <span class="detail">Nepřetržitě, pípnutí po každém intervalu, žádné ruční zásahy.</span>
           <span class="plan-duration">
             <label for="phase1DurationInput">Délka intervalu</label>
-            <input type="number" class="duration-input" id="phase1DurationInput" min="5" max="900" step="5" value="90"> s
+            <input type="number" inputmode="numeric" pattern="[0-9]*" class="duration-input" id="phase1DurationInput" min="5" max="900" step="5" value="90"> s
           </span>
         </span>
       </li>
@@ -460,7 +460,7 @@
           <span class="detail">Stejně jako fáze 1, spouští se po tvém potvrzení.</span>
           <span class="plan-duration">
             <label for="phase2DurationInput">Délka intervalu</label>
-            <input type="number" class="duration-input" id="phase2DurationInput" min="5" max="900" step="5" value="90"> s
+            <input type="number" inputmode="numeric" pattern="[0-9]*" class="duration-input" id="phase2DurationInput" min="5" max="900" step="5" value="90"> s
           </span>
         </span>
       </li>
@@ -471,7 +471,7 @@
           <span class="detail">Nejdřív cvičíš, pak sám stiskneš Start a spustí se odpočinek s pípnutím na konci.</span>
           <span class="plan-duration">
             <label for="phase3DurationInput">Délka odpočinku</label>
-            <input type="number" class="duration-input" id="phase3DurationInput" min="5" max="900" step="5" value="90"> s
+            <input type="number" inputmode="numeric" pattern="[0-9]*" class="duration-input" id="phase3DurationInput" min="5" max="900" step="5" value="90"> s
           </span>
         </span>
       </li>
@@ -566,7 +566,7 @@
     </div>
     <div class="duration-custom">
       <label for="durationCustomInputLegsA">Vlastní</label>
-      <input type="number" class="duration-input" id="durationCustomInputLegsA" min="5" max="900" placeholder="90">
+      <input type="number" inputmode="numeric" pattern="[0-9]*" class="duration-input" id="durationCustomInputLegsA" min="5" max="900" placeholder="90">
       <span>s</span>
     </div>
     <button class="primary" id="startLegsABtn">Start</button>
@@ -612,7 +612,7 @@
     </div>
     <div class="duration-custom">
       <label for="durationCustomInputLegsB">Vlastní</label>
-      <input type="number" class="duration-input" id="durationCustomInputLegsB" min="5" max="900" placeholder="90">
+      <input type="number" inputmode="numeric" pattern="[0-9]*" class="duration-input" id="durationCustomInputLegsB" min="5" max="900" placeholder="90">
       <span>s</span>
     </div>
     <button class="primary" id="startLegsBBtn">Start</button>
@@ -663,7 +663,7 @@
     </div>
     <div class="duration-custom">
       <label for="durationCustomInput">Vlastní</label>
-      <input type="number" class="duration-input" id="durationCustomInput" min="5" max="900" placeholder="90">
+      <input type="number" inputmode="numeric" pattern="[0-9]*" class="duration-input" id="durationCustomInput" min="5" max="900" placeholder="90">
       <span>s</span>
     </div>
     <button class="primary" id="startSimpleBtn">Start</button>
@@ -672,9 +672,6 @@
 
   <div data-screen="simple-running" hidden style="--phase-color:var(--work); --phase-soft:var(--work-soft)">
     <div class="eyebrow">Časovač · <span id="simpleDurationLabel">1 min 30 s</span></div>
-    <div class="counters">
-      <span class="chip">Odcvičeno kol <span id="simpleCount">0</span></span>
-    </div>
     <div class="ring-wrap">
       <svg viewBox="0 0 200 200">
         <g id="ticksSimple"></g>
@@ -686,7 +683,7 @@
     </div>
     <div class="controls-row">
       <button class="secondary" id="pauseBtnSimple">Pauza</button>
-      <button class="secondary" id="stopSimpleBtn">Stop</button>
+      <button class="secondary" id="stopSimpleBtn">Zrušit</button>
     </div>
   </div>
 </div>
@@ -1061,24 +1058,16 @@
   const legsAPicker = makeDurationPicker("durationGridLegsA", 90, "durationCustomInputLegsA");
   const legsBPicker = makeDurationPicker("durationGridLegsB", 90, "durationCustomInputLegsB");
 
-  let simpleCount = 0;
-
   const cdSimple = makeCountdown(document.getElementById("ringSimple"), document.getElementById("numSimple"), formatClock);
 
-  function runSimpleInterval(){
-    document.getElementById("simpleCount").textContent = simpleCount;
-    cdSimple.start(simplePicker.value, () => {
-      playSignal();
-      simpleCount++;
-      runSimpleInterval();
-    });
-  }
   document.getElementById("startSimpleBtn").addEventListener("click", () => {
     initAudio(); requestWakeLock();
-    simpleCount = 0;
     document.getElementById("simpleDurationLabel").textContent = formatDuration(simplePicker.value);
     showScreen("simple-running");
-    runSimpleInterval();
+    cdSimple.start(simplePicker.value, () => {
+      playFinish();
+      showScreen("simple-setup");
+    });
   });
   document.getElementById("pauseBtnSimple").addEventListener("click", (e) => cdSimple.togglePause(e.target));
   document.getElementById("stopSimpleBtn").addEventListener("click", () => {
@@ -1182,7 +1171,7 @@
 
   function fullReset(){
     cd1.stop(); cd2.stop(); cdSimple.stop(); cdLegsA.stop(); cdLegsB.stop();
-    currentBlockPhase = 1; interval = 1; round = 1; simpleCount = 0; legsARep = 1; legsBRep = 1;
+    currentBlockPhase = 1; interval = 1; round = 1; legsARep = 1; legsBRep = 1;
     document.getElementById("pauseBtn1").textContent = "Pauza";
     document.getElementById("pauseBtn2").textContent = "Pauza";
     document.getElementById("pauseBtnSimple").textContent = "Pauza";
