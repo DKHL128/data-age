@@ -88,6 +88,13 @@
     margin:0;
     color:var(--muted);
   }
+  .version-tag{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:10px;
+    color:var(--muted);
+    opacity:.6;
+    margin-top:2px;
+  }
   .topbar{
     display:flex;
     align-items:center;
@@ -275,10 +282,10 @@
   }
   .plan-duration label{ font-weight:600; }
   .duration-input{
-    width:60px;
+    width:68px;
     font-family:"IBM Plex Mono",monospace;
     font-weight:700;
-    font-size:14px;
+    font-size:16px;
     padding:5px 6px;
     border:1.5px solid var(--border);
     border-radius:8px;
@@ -388,7 +395,10 @@
 
 <div class="app">
   <div class="topbar">
-    <h1>Time</h1>
+    <div>
+      <h1>Time</h1>
+      <div class="version-tag">v2026-09-13</div>
+    </div>
     <div class="topbar-actions">
       <button class="reset-btn" id="fullscreenBtn" hidden aria-label="Celá obrazovka">⛶</button>
       <button class="reset-btn" id="resetBtn">Reset</button>
