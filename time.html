@@ -1,0 +1,1179 @@
+<title>Time</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=Manrope:wght@500;600;700;800&display=swap">
+<style>
+  :root{
+    --bg:#f2f1ed;
+    --card:#ffffff;
+    --text:#17181a;
+    --muted:#6b6f76;
+    --work:#1e6fa8;
+    --work-soft:#d9e9f4;
+    --rest:#c8722a;
+    --rest-soft:#f6e4d3;
+    --ring-track:#dcdad2;
+    --border:#e2e0d8;
+    --btn-text:#ffffff;
+    --danger:#b3401f;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#14171a;
+      --card:#1d2126;
+      --text:#f1efe9;
+      --muted:#9a9da3;
+      --work:#59aee0;
+      --work-soft:#213542;
+      --rest:#f0a050;
+      --rest-soft:#3a2a1a;
+      --ring-track:#2a2e33;
+      --border:#282c31;
+      --btn-text:#0f1113;
+      --danger:#f0806a;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#14171a;
+    --card:#1d2126;
+    --text:#f1efe9;
+    --muted:#9a9da3;
+    --work:#59aee0;
+    --work-soft:#213542;
+    --rest:#f0a050;
+    --rest-soft:#3a2a1a;
+    --ring-track:#2a2e33;
+    --border:#282c31;
+    --btn-text:#0f1113;
+    --danger:#f0806a;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:"Manrope",system-ui,sans-serif;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px 16px;
+  }
+  .app{
+    width:100%;
+    max-width:420px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:28px 24px 24px;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    position:relative;
+  }
+  h1{
+    font-size:15px;
+    font-weight:800;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    margin:0;
+    color:var(--muted);
+  }
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .reset-btn{
+    font-family:"Manrope",sans-serif;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    color:var(--muted);
+    background:none;
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:6px 10px;
+    cursor:pointer;
+  }
+  .reset-btn:hover{ color:var(--text); border-color:var(--muted); }
+
+  .progress-panel[hidden]{ display:none; }
+  .progress-panel{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    padding:14px 14px 16px;
+    border:1px solid var(--border);
+    border-radius:14px;
+  }
+  .phase-track{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:center;
+    gap:6px 8px;
+  }
+  .phase-step{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:5px 10px 5px 6px;
+    border-radius:999px;
+    border:1.5px solid var(--border);
+    font-size:12px;
+    font-weight:700;
+    color:var(--muted);
+    white-space:nowrap;
+  }
+  .phase-step .num{
+    width:17px;
+    height:17px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:"IBM Plex Mono",monospace;
+    font-size:10.5px;
+    border:1.5px solid currentColor;
+    flex:0 0 auto;
+  }
+  .phase-step.active.work{ color:var(--btn-text); background:var(--work); border-color:var(--work); }
+  .phase-step.active.rest{ color:var(--btn-text); background:var(--rest); border-color:var(--rest); }
+  .phase-step.active .num{ border-color:var(--btn-text); }
+  .phase-step.done.work{ color:var(--work); border-color:var(--work); }
+  .phase-step.done.rest{ color:var(--rest); border-color:var(--rest); }
+  .phase-line{ flex:0 0 22px; height:1.5px; background:var(--border); }
+  .phase-line.done{ background:var(--work); }
+
+  .dots-block{ display:flex; flex-direction:column; gap:6px; }
+  .dots-label{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.03em;
+    color:var(--muted);
+    text-transform:uppercase;
+  }
+  .dots-rows{ display:flex; flex-direction:column; gap:5px; }
+  .dots-row{ display:flex; justify-content:center; gap:5px; }
+  .dot{
+    width:11px;
+    height:11px;
+    border-radius:50%;
+    border:1.5px solid var(--border);
+    background:transparent;
+    flex:0 0 auto;
+    transition:background .15s ease, border-color .15s ease, transform .15s ease;
+  }
+  .dots-row.work .dot.done{ background:var(--work); border-color:var(--work); }
+  .dots-row.work .dot.current{ background:var(--work-soft); border-color:var(--work); box-shadow:0 0 0 3px var(--work-soft); transform:scale(1.15); }
+  .dots-row.rest .dot.done{ background:var(--rest); border-color:var(--rest); }
+  .dots-row.rest .dot.current{ background:var(--rest-soft); border-color:var(--rest); box-shadow:0 0 0 3px var(--rest-soft); transform:scale(1.15); }
+
+  .mode-options{ display:flex; flex-direction:column; gap:10px; }
+  .mode-card{
+    text-align:left;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    padding:16px;
+    border:1.5px solid var(--border);
+    border-radius:14px;
+    background:none;
+    color:var(--text);
+    cursor:pointer;
+    font-family:"Manrope",sans-serif;
+  }
+  .mode-card:hover{ border-color:var(--muted); }
+  .mode-title{ font-weight:800; font-size:15px; }
+  .mode-detail{ font-size:13px; color:var(--muted); line-height:1.45; }
+
+  .duration-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:10px;
+  }
+  .duration-btn{
+    font-family:"IBM Plex Mono",monospace;
+    font-weight:700;
+    font-size:17px;
+    padding:16px;
+    border-radius:12px;
+    border:1.5px solid var(--border);
+    background:none;
+    color:var(--text);
+    cursor:pointer;
+  }
+  .duration-btn.selected{
+    border-color:var(--work);
+    background:var(--work-soft);
+    color:var(--work);
+  }
+
+  .duration-custom{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:12.5px;
+    color:var(--muted);
+  }
+  .duration-custom label{ font-weight:600; }
+  .duration-custom .duration-input.selected{
+    border-color:var(--work);
+    background:var(--work-soft);
+    color:var(--work);
+  }
+
+  [data-screen]{ display:flex; flex-direction:column; gap:18px; }
+  [data-screen][hidden]{ display:none; }
+
+  .plan{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin:0;
+    padding:0;
+    list-style:none;
+  }
+  .plan li{
+    display:flex;
+    gap:12px;
+    padding:14px;
+    border:1px solid var(--border);
+    border-radius:14px;
+  }
+  .plan .num{
+    font-family:"IBM Plex Mono",monospace;
+    font-weight:700;
+    font-size:13px;
+    color:var(--muted);
+    padding-top:2px;
+  }
+  .plan .body{ display:flex; flex-direction:column; gap:2px; }
+  .plan .label{ font-weight:700; font-size:14.5px; }
+  .plan .detail{ font-size:13px; color:var(--muted); line-height:1.45; }
+  .plan-duration{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:8px;
+    font-size:12.5px;
+    color:var(--muted);
+  }
+  .plan-duration label{ font-weight:600; }
+  .duration-input{
+    width:60px;
+    font-family:"IBM Plex Mono",monospace;
+    font-weight:700;
+    font-size:14px;
+    padding:5px 6px;
+    border:1.5px solid var(--border);
+    border-radius:8px;
+    background:var(--card);
+    color:var(--text);
+    text-align:center;
+  }
+  .duration-input:focus{ outline:none; border-color:var(--work); }
+
+  .eyebrow{
+    text-align:center;
+    font-size:12.5px;
+    font-weight:800;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--phase-color, var(--work));
+  }
+  .counters{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+  }
+  .chip{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:12.5px;
+    font-weight:600;
+    padding:4px 10px;
+    border-radius:999px;
+    background:var(--phase-soft, var(--work-soft));
+    color:var(--phase-color, var(--work));
+  }
+
+  .ring-wrap{
+    position:relative;
+    width:236px;
+    height:236px;
+    margin:0 auto;
+  }
+  .ring-wrap svg{ width:100%; height:100%; display:block; }
+  .ring-track{ stroke:var(--ring-track); }
+  .ring-progress{
+    stroke:var(--phase-color, var(--work));
+    transition:stroke-dashoffset .18s linear, stroke .3s ease;
+  }
+  .tick{ stroke:var(--border); }
+  .ring-number{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:"IBM Plex Mono",monospace;
+    font-weight:700;
+    font-size:56px;
+    font-variant-numeric:tabular-nums;
+    letter-spacing:-.02em;
+  }
+
+  .hint{
+    text-align:center;
+    font-size:13.5px;
+    color:var(--muted);
+    line-height:1.5;
+    max-width:30ch;
+    margin:0 auto;
+  }
+
+  button.primary{
+    font-family:"Manrope",sans-serif;
+    font-weight:700;
+    font-size:15.5px;
+    color:var(--btn-text);
+    background:var(--phase-color, var(--work));
+    border:none;
+    border-radius:14px;
+    padding:15px 18px;
+    cursor:pointer;
+  }
+  button.primary:active{ transform:translateY(1px); }
+  button.secondary{
+    font-family:"Manrope",sans-serif;
+    font-weight:700;
+    font-size:13.5px;
+    color:var(--text);
+    background:none;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:10px 14px;
+    cursor:pointer;
+  }
+  .controls-row{ display:flex; gap:10px; justify-content:center; }
+
+  .done-mark{
+    text-align:center;
+    font-family:"IBM Plex Mono",monospace;
+    font-size:15px;
+    font-weight:600;
+    color:var(--muted);
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .ring-progress{ transition:none; }
+  }
+</style>
+
+<div class="app">
+  <div class="topbar">
+    <h1>Time</h1>
+    <button class="reset-btn" id="resetBtn">Reset</button>
+  </div>
+
+  <div class="progress-panel" id="progressPanel" hidden>
+    <div class="phase-track">
+      <div class="phase-step" id="stepPhase1"><span class="num">1</span><span>Fáze 1</span></div>
+      <div class="phase-line" id="phaseLine1"></div>
+      <div class="phase-step" id="stepPhase2"><span class="num">2</span><span>Fáze 2</span></div>
+      <div class="phase-line" id="phaseLine2"></div>
+      <div class="phase-step" id="stepPhase3"><span class="num">3</span><span>Fáze 3</span></div>
+    </div>
+    <div class="dots-block">
+      <div class="dots-label">Fáze 1 — odcvičeno <span id="p1DoneLabel">0</span>/10</div>
+      <div class="dots-rows">
+        <div class="dots-row work" id="dotsPhase1"></div>
+      </div>
+    </div>
+    <div class="dots-block">
+      <div class="dots-label">Fáze 2 — odcvičeno <span id="p2DoneLabel">0</span>/10</div>
+      <div class="dots-rows">
+        <div class="dots-row work" id="dotsPhase2"></div>
+      </div>
+    </div>
+    <div class="dots-block">
+      <div class="dots-label">Fáze 3 — odcvičeno <span id="p3DoneLabel">0</span>/4</div>
+      <div class="dots-rows">
+        <div class="dots-row rest" id="dotsPhase3"></div>
+      </div>
+    </div>
+  </div>
+
+  <div data-screen="select">
+    <div class="mode-options">
+      <button class="mode-card" id="modePlanBtn">
+        <span class="mode-title">Tréninkový plán</span>
+        <span class="mode-detail">Tři fáze: 10× 90 s, 10× 90 s, pak 4× 90 s odpočinku spouštěného vlastním startem</span>
+      </button>
+      <button class="mode-card" id="modeLegsBtn">
+        <span class="mode-title">Trénink nohou</span>
+        <span class="mode-detail">Dřep (4×) a mrtvola (5×) — u obou zvolíš délku intervalu před startem</span>
+      </button>
+      <button class="mode-card" id="modeSimpleBtn">
+        <span class="mode-title">Jednoduchý časovač</span>
+        <span class="mode-detail">Zvol si délku intervalu (60/90/120/150 s) a opakuj, dokud nezastavíš</span>
+      </button>
+    </div>
+  </div>
+
+  <div data-screen="start" hidden>
+    <ol class="plan">
+      <li>
+        <span class="num">01</span>
+        <span class="body">
+          <span class="label">Fáze 1 — 10×</span>
+          <span class="detail">Nepřetržitě, pípnutí po každém intervalu, žádné ruční zásahy.</span>
+          <span class="plan-duration">
+            <label for="phase1DurationInput">Délka intervalu</label>
+            <input type="number" class="duration-input" id="phase1DurationInput" min="5" max="900" step="5" value="90"> s
+          </span>
+        </span>
+      </li>
+      <li>
+        <span class="num">02</span>
+        <span class="body">
+          <span class="label">Fáze 2 — 10×</span>
+          <span class="detail">Stejně jako fáze 1, spouští se po tvém potvrzení.</span>
+          <span class="plan-duration">
+            <label for="phase2DurationInput">Délka intervalu</label>
+            <input type="number" class="duration-input" id="phase2DurationInput" min="5" max="900" step="5" value="90"> s
+          </span>
+        </span>
+      </li>
+      <li>
+        <span class="num">03</span>
+        <span class="body">
+          <span class="label">Fáze 3 — 4× odpočinek</span>
+          <span class="detail">Nejdřív cvičíš, pak sám stiskneš Start a spustí se odpočinek s pípnutím na konci.</span>
+          <span class="plan-duration">
+            <label for="phase3DurationInput">Délka odpočinku</label>
+            <input type="number" class="duration-input" id="phase3DurationInput" min="5" max="900" step="5" value="90"> s
+          </span>
+        </span>
+      </li>
+    </ol>
+    <button class="primary" id="startBtn">Spustit fázi 1</button>
+    <button class="secondary" id="backToSelectFromStartBtn">Zpět na výběr</button>
+  </div>
+
+  <div data-screen="phase-a-running" hidden style="--phase-color:var(--work); --phase-soft:var(--work-soft)">
+    <div class="eyebrow" id="phaseAEyebrow">Fáze 1</div>
+    <div class="counters">
+      <span class="chip">Interval <span id="paInterval">1</span>/10</span>
+    </div>
+    <div class="ring-wrap">
+      <svg viewBox="0 0 200 200">
+        <g id="ticks1"></g>
+        <circle class="ring-track" cx="100" cy="100" r="82" stroke-width="10" fill="none"/>
+        <circle class="ring-progress" id="ringP1" cx="100" cy="100" r="82" stroke-width="10" fill="none"
+          stroke-linecap="round" transform="rotate(-90 100 100)"/>
+      </svg>
+      <div class="ring-number" id="numP1">90</div>
+    </div>
+    <div class="controls-row">
+      <button class="secondary" id="pauseBtn1">Pauza</button>
+    </div>
+  </div>
+
+  <div data-screen="phase-a-done" hidden style="--phase-color:var(--work); --phase-soft:var(--work-soft)">
+    <div class="eyebrow" id="phaseADoneTitle">Fáze 1 hotová</div>
+    <p class="hint" id="phaseADoneHint">10× 90 s odpípáno. Teď si zacvič a až budeš připraven, pokračuj do fáze 2.</p>
+    <button class="primary" id="phaseADoneBtn">Pokračovat na fázi 2</button>
+  </div>
+
+  <div data-screen="p2-wait" hidden style="--phase-color:var(--rest); --phase-soft:var(--rest-soft)">
+    <div class="eyebrow">Fáze 3</div>
+    <div class="counters">
+      <span class="chip">Kolo <span id="p2WaitRound">1</span>/4</span>
+    </div>
+    <p class="hint" id="p3WaitHint">Zacvič si daný cvik. Až skončíš, stiskni Start — spustí se odpočinek.</p>
+    <button class="primary" id="startRestBtn">Start odpočinku</button>
+  </div>
+
+  <div data-screen="p2-running" hidden style="--phase-color:var(--rest); --phase-soft:var(--rest-soft)">
+    <div class="eyebrow">Odpočinek</div>
+    <div class="counters">
+      <span class="chip">Kolo <span id="p2Round">1</span>/4</span>
+    </div>
+    <div class="ring-wrap">
+      <svg viewBox="0 0 200 200">
+        <g id="ticks2"></g>
+        <circle class="ring-track" cx="100" cy="100" r="82" stroke-width="10" fill="none"/>
+        <circle class="ring-progress" id="ringP2" cx="100" cy="100" r="82" stroke-width="10" fill="none"
+          stroke-linecap="round" transform="rotate(-90 100 100)"/>
+      </svg>
+      <div class="ring-number" id="numP2">90</div>
+    </div>
+    <div class="controls-row">
+      <button class="secondary" id="pauseBtn2">Pauza</button>
+    </div>
+  </div>
+
+  <div data-screen="done" hidden>
+    <div class="eyebrow">Hotovo</div>
+    <p class="done-mark">Celý trénink dokončen.</p>
+    <button class="primary" id="restartBtn">Spustit znovu</button>
+  </div>
+
+  <div data-screen="legs-intro" hidden>
+    <div class="eyebrow">Trénink nohou</div>
+    <p class="hint">Co budeš cvičit jako první?</p>
+    <div class="mode-options">
+      <button class="mode-card" id="legsOrderDrepFirstBtn">
+        <span class="mode-title">Nejdřív dřep</span>
+        <span class="mode-detail">Dřep (4×), pak mrtvola (5×)</span>
+      </button>
+      <button class="mode-card" id="legsOrderMrtvolaFirstBtn">
+        <span class="mode-title">Nejdřív mrtvola</span>
+        <span class="mode-detail">Mrtvola (5×), pak dřep (4×)</span>
+      </button>
+    </div>
+    <button class="secondary" id="backToSelectFromLegsIntroBtn">Zpět na výběr</button>
+  </div>
+
+  <div data-screen="legs-a-setup" hidden style="--phase-color:var(--work); --phase-soft:var(--work-soft)">
+    <div class="eyebrow" id="legsASetupEyebrow">Trénink nohou · Dřep</div>
+    <p class="hint" id="legsASetupHint">Zvol délku intervalu pro dřep (4×).</p>
+    <div class="duration-grid" id="durationGridLegsA">
+      <button class="duration-btn" data-duration="60">1 min</button>
+      <button class="duration-btn" data-duration="90">1 min 30 s</button>
+      <button class="duration-btn" data-duration="120">2 min</button>
+      <button class="duration-btn" data-duration="150">2 min 30 s</button>
+    </div>
+    <div class="duration-custom">
+      <label for="durationCustomInputLegsA">Vlastní</label>
+      <input type="number" class="duration-input" id="durationCustomInputLegsA" min="5" max="900" placeholder="90">
+      <span>s</span>
+    </div>
+    <button class="primary" id="startLegsABtn">Start</button>
+    <button class="secondary" id="backToSelectFromLegsABtn">Zpět na výběr</button>
+  </div>
+
+  <div data-screen="legs-a-wait" hidden style="--phase-color:var(--work); --phase-soft:var(--work-soft)">
+    <div class="eyebrow" id="legsAWaitEyebrow">Dřep</div>
+    <div class="counters">
+      <span class="chip">Opakování <span id="legsAWaitRep">1</span>/<span id="legsAWaitTotal">4</span></span>
+    </div>
+    <p class="hint" id="legsAWaitHint">Zacvič si dřep. Až skončíš, stiskni Start — spustí se pauza.</p>
+    <button class="primary" id="startLegsARestBtn">Start pauzy</button>
+  </div>
+
+  <div data-screen="legs-a-running" hidden style="--phase-color:var(--work); --phase-soft:var(--work-soft)">
+    <div class="eyebrow" id="legsARunningEyebrow">Dřep</div>
+    <div class="counters">
+      <span class="chip">Opakování <span id="legsARep">1</span>/<span id="legsATotal">4</span></span>
+    </div>
+    <div class="ring-wrap">
+      <svg viewBox="0 0 200 200">
+        <g id="ticksLegsA"></g>
+        <circle class="ring-track" cx="100" cy="100" r="82" stroke-width="10" fill="none"/>
+        <circle class="ring-progress" id="ringLegsA" cx="100" cy="100" r="82" stroke-width="10" fill="none"
+          stroke-linecap="round" transform="rotate(-90 100 100)"/>
+      </svg>
+      <div class="ring-number" id="numLegsA">90</div>
+    </div>
+    <div class="controls-row">
+      <button class="secondary" id="pauseBtnLegsA">Pauza</button>
+    </div>
+  </div>
+
+  <div data-screen="legs-b-setup" hidden style="--phase-color:var(--rest); --phase-soft:var(--rest-soft)">
+    <div class="eyebrow" id="legsBSetupEyebrow">Trénink nohou · Mrtvola</div>
+    <p class="hint" id="legsBSetupHint">Dřep hotový. Zvol délku intervalu pro mrtvolu (5×).</p>
+    <div class="duration-grid" id="durationGridLegsB">
+      <button class="duration-btn" data-duration="60">1 min</button>
+      <button class="duration-btn" data-duration="90">1 min 30 s</button>
+      <button class="duration-btn" data-duration="120">2 min</button>
+      <button class="duration-btn" data-duration="150">2 min 30 s</button>
+    </div>
+    <div class="duration-custom">
+      <label for="durationCustomInputLegsB">Vlastní</label>
+      <input type="number" class="duration-input" id="durationCustomInputLegsB" min="5" max="900" placeholder="90">
+      <span>s</span>
+    </div>
+    <button class="primary" id="startLegsBBtn">Start</button>
+  </div>
+
+  <div data-screen="legs-b-wait" hidden style="--phase-color:var(--rest); --phase-soft:var(--rest-soft)">
+    <div class="eyebrow" id="legsBWaitEyebrow">Mrtvola</div>
+    <div class="counters">
+      <span class="chip">Opakování <span id="legsBWaitRep">1</span>/<span id="legsBWaitTotal">5</span></span>
+    </div>
+    <p class="hint" id="legsBWaitHint">Zacvič si mrtvý tah. Až skončíš, stiskni Start — spustí se pauza.</p>
+    <button class="primary" id="startLegsBRestBtn">Start pauzy</button>
+  </div>
+
+  <div data-screen="legs-b-running" hidden style="--phase-color:var(--rest); --phase-soft:var(--rest-soft)">
+    <div class="eyebrow" id="legsBRunningEyebrow">Mrtvola</div>
+    <div class="counters">
+      <span class="chip">Opakování <span id="legsBRep">1</span>/<span id="legsBTotal">5</span></span>
+    </div>
+    <div class="ring-wrap">
+      <svg viewBox="0 0 200 200">
+        <g id="ticksLegsB"></g>
+        <circle class="ring-track" cx="100" cy="100" r="82" stroke-width="10" fill="none"/>
+        <circle class="ring-progress" id="ringLegsB" cx="100" cy="100" r="82" stroke-width="10" fill="none"
+          stroke-linecap="round" transform="rotate(-90 100 100)"/>
+      </svg>
+      <div class="ring-number" id="numLegsB">90</div>
+    </div>
+    <div class="controls-row">
+      <button class="secondary" id="pauseBtnLegsB">Pauza</button>
+    </div>
+  </div>
+
+  <div data-screen="legs-done" hidden>
+    <div class="eyebrow">Hotovo</div>
+    <p class="done-mark">Trénink nohou dokončen.</p>
+    <button class="primary" id="legsRestartBtn">Spustit znovu</button>
+  </div>
+
+  <div data-screen="simple-setup" hidden>
+    <div class="eyebrow">Jednoduchý časovač</div>
+    <p class="hint">Zvol délku intervalu.</p>
+    <div class="duration-grid" id="durationGrid">
+      <button class="duration-btn" data-duration="60">1 min</button>
+      <button class="duration-btn" data-duration="90">1 min 30 s</button>
+      <button class="duration-btn" data-duration="120">2 min</button>
+      <button class="duration-btn" data-duration="150">2 min 30 s</button>
+    </div>
+    <div class="duration-custom">
+      <label for="durationCustomInput">Vlastní</label>
+      <input type="number" class="duration-input" id="durationCustomInput" min="5" max="900" placeholder="90">
+      <span>s</span>
+    </div>
+    <button class="primary" id="startSimpleBtn">Start</button>
+    <button class="secondary" id="backToSelectFromSetupBtn">Zpět na výběr</button>
+  </div>
+
+  <div data-screen="simple-running" hidden style="--phase-color:var(--work); --phase-soft:var(--work-soft)">
+    <div class="eyebrow">Časovač · <span id="simpleDurationLabel">1 min 30 s</span></div>
+    <div class="counters">
+      <span class="chip">Odcvičeno kol <span id="simpleCount">0</span></span>
+    </div>
+    <div class="ring-wrap">
+      <svg viewBox="0 0 200 200">
+        <g id="ticksSimple"></g>
+        <circle class="ring-track" cx="100" cy="100" r="82" stroke-width="10" fill="none"/>
+        <circle class="ring-progress" id="ringSimple" cx="100" cy="100" r="82" stroke-width="10" fill="none"
+          stroke-linecap="round" transform="rotate(-90 100 100)"/>
+      </svg>
+      <div class="ring-number" id="numSimple">90</div>
+    </div>
+    <div class="controls-row">
+      <button class="secondary" id="pauseBtnSimple">Pauza</button>
+      <button class="secondary" id="stopSimpleBtn">Stop</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const RADIUS = 82;
+  const CIRC = 2 * Math.PI * RADIUS;
+
+  function buildTicks(container){
+    const g = document.getElementById(container);
+    for(let i=0;i<12;i++){
+      const angle = (i/12) * 2*Math.PI - Math.PI/2;
+      const inner = RADIUS + 10, outer = RADIUS + 15;
+      const x1 = 100 + inner*Math.cos(angle), y1 = 100 + inner*Math.sin(angle);
+      const x2 = 100 + outer*Math.cos(angle), y2 = 100 + outer*Math.sin(angle);
+      const line = document.createElementNS("http://www.w3.org/2000/svg","line");
+      line.setAttribute("x1",x1); line.setAttribute("y1",y1);
+      line.setAttribute("x2",x2); line.setAttribute("y2",y2);
+      line.setAttribute("class","tick");
+      line.setAttribute("stroke-width","2");
+      g.appendChild(line);
+    }
+  }
+  buildTicks("ticks1");
+  buildTicks("ticks2");
+  buildTicks("ticksSimple");
+  buildTicks("ticksLegsA");
+  buildTicks("ticksLegsB");
+
+  const PLAN_SCREENS = new Set(["start", "phase-a-running", "phase-a-done", "p2-wait", "p2-running", "done"]);
+
+  const screens = {};
+  document.querySelectorAll("[data-screen]").forEach(el => screens[el.dataset.screen] = el);
+  function showScreen(name){
+    Object.values(screens).forEach(el => el.hidden = true);
+    screens[name].hidden = false;
+    document.getElementById("progressPanel").hidden = !PLAN_SCREENS.has(name);
+    renderProgress(name);
+  }
+
+  function buildDots(containerId, count){
+    const el = document.getElementById(containerId);
+    const dots = [];
+    for(let i=0;i<count;i++){
+      const d = document.createElement("span");
+      d.className = "dot";
+      el.appendChild(d);
+      dots.push(d);
+    }
+    return dots;
+  }
+  const dotsPhase1 = buildDots("dotsPhase1", 10);
+  const dotsPhase2 = buildDots("dotsPhase2", 10);
+  const dotsPhase3 = buildDots("dotsPhase3", 4);
+
+  function paintDots(dots, doneCount, currentIndex){
+    dots.forEach((d, i) => {
+      const n = i + 1;
+      d.classList.toggle("done", n <= doneCount);
+      d.classList.toggle("current", n === currentIndex);
+    });
+  }
+
+  function renderProgress(screenName){
+    let p1Done = 0, p1Current = null, p2Done = 0, p2Current = null, p3Done = 0, p3Current = null;
+    let step1State = "pending", step2State = "pending", step3State = "pending";
+
+    if(screenName === "phase-a-running"){
+      if(currentBlockPhase === 1){
+        p1Current = interval;
+        p1Done = interval - 1;
+        step1State = "active";
+      } else {
+        p1Done = PHASE_INTERVALS;
+        step1State = "done";
+        p2Current = interval;
+        p2Done = interval - 1;
+        step2State = "active";
+      }
+    } else if(screenName === "phase-a-done"){
+      p1Done = PHASE_INTERVALS;
+      step1State = "done";
+      if(currentBlockPhase === 2){
+        p2Done = PHASE_INTERVALS;
+        step2State = "done";
+      }
+    } else if(screenName === "p2-wait" || screenName === "p2-running"){
+      p1Done = PHASE_INTERVALS;
+      p2Done = PHASE_INTERVALS;
+      step1State = "done";
+      step2State = "done";
+      p3Current = round;
+      p3Done = round - 1;
+      step3State = "active";
+    } else if(screenName === "done"){
+      p1Done = PHASE_INTERVALS;
+      p2Done = PHASE_INTERVALS;
+      p3Done = PHASE3_ROUNDS;
+      step1State = "done";
+      step2State = "done";
+      step3State = "done";
+    }
+
+    paintDots(dotsPhase1, p1Done, p1Current);
+    paintDots(dotsPhase2, p2Done, p2Current);
+    paintDots(dotsPhase3, p3Done, p3Current);
+    document.getElementById("p1DoneLabel").textContent = p1Done;
+    document.getElementById("p2DoneLabel").textContent = p2Done;
+    document.getElementById("p3DoneLabel").textContent = p3Done;
+
+    const step1El = document.getElementById("stepPhase1");
+    const step2El = document.getElementById("stepPhase2");
+    const step3El = document.getElementById("stepPhase3");
+    step1El.className = "phase-step work" + (step1State !== "pending" ? " " + step1State : "");
+    step2El.className = "phase-step work" + (step2State !== "pending" ? " " + step2State : "");
+    step3El.className = "phase-step rest" + (step3State !== "pending" ? " " + step3State : "");
+    document.getElementById("phaseLine1").classList.toggle("done", step1State === "done");
+    document.getElementById("phaseLine2").classList.toggle("done", step2State === "done");
+  }
+
+  let audioCtx = null;
+  function initAudio(){
+    if(!audioCtx){
+      try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){}
+    }
+  }
+  function tone(freq, start, dur){
+    if(!audioCtx) return;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = "sine";
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0, start);
+    gain.gain.linearRampToValueAtTime(0.22, start + 0.01);
+    gain.gain.linearRampToValueAtTime(0, start + dur);
+    osc.connect(gain).connect(audioCtx.destination);
+    osc.start(start);
+    osc.stop(start + dur + 0.02);
+  }
+  function playSignal(){
+    if(!audioCtx) return;
+    const t = audioCtx.currentTime;
+    tone(880, t, 0.14);
+    tone(880, t + 0.2, 0.14);
+    vibrate([180,80,180]);
+  }
+  function playFinish(){
+    if(!audioCtx) return;
+    const t = audioCtx.currentTime;
+    tone(660, t, 0.13);
+    tone(880, t + 0.16, 0.13);
+    tone(1046, t + 0.32, 0.22);
+    vibrate([150,70,150,70,300]);
+  }
+  function vibrate(pattern){
+    try{ navigator.vibrate && navigator.vibrate(pattern); }catch(e){}
+  }
+
+  let wakeLock = null;
+  async function requestWakeLock(){
+    try{
+      if('wakeLock' in navigator){ wakeLock = await navigator.wakeLock.request('screen'); }
+    }catch(e){}
+  }
+  document.addEventListener('visibilitychange', async () => {
+    if(wakeLock !== null && document.visibilityState === 'visible'){
+      try{ wakeLock = await navigator.wakeLock.request('screen'); }catch(e){}
+    }
+  });
+
+  function formatClock(totalSeconds){
+    const s = Math.max(0, Math.ceil(totalSeconds));
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return m + ":" + String(sec).padStart(2, "0");
+  }
+  function formatDuration(totalSeconds){
+    const s = Math.max(0, Math.round(totalSeconds));
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    if(m === 0) return sec + " s";
+    if(sec === 0) return m + " min";
+    return m + " min " + sec + " s";
+  }
+
+  function makeCountdown(ringEl, numEl, formatFn){
+    let duration = 90, deadline = 0, tickId = null, paused = false, pauseRemaining = 0, onDone = null;
+    const format = formatFn || (remaining => String(Math.ceil(remaining)));
+
+    function render(remaining){
+      const clamped = Math.max(0, remaining);
+      numEl.textContent = format(clamped);
+      const fraction = clamped / duration;
+      ringEl.style.strokeDasharray = CIRC;
+      ringEl.style.strokeDashoffset = CIRC * (1 - fraction);
+    }
+
+    function tick(){
+      const remaining = (deadline - Date.now()) / 1000;
+      if(remaining <= 0){
+        clearInterval(tickId);
+        render(0);
+        const cb = onDone;
+        onDone = null;
+        if(cb) cb();
+        return;
+      }
+      render(remaining);
+    }
+
+    return {
+      start(dur, cb){
+        duration = dur;
+        onDone = cb;
+        paused = false;
+        deadline = Date.now() + dur*1000;
+        render(dur);
+        clearInterval(tickId);
+        tickId = setInterval(tick, 100);
+      },
+      togglePause(btn){
+        if(paused){
+          deadline = Date.now() + pauseRemaining*1000;
+          tickId = setInterval(tick, 100);
+          paused = false;
+          btn.textContent = "Pauza";
+        } else {
+          pauseRemaining = Math.max(0, (deadline - Date.now())/1000);
+          clearInterval(tickId);
+          paused = true;
+          btn.textContent = "Pokračovat";
+        }
+      },
+      stop(){ clearInterval(tickId); }
+    };
+  }
+
+  const cd1 = makeCountdown(document.getElementById("ringP1"), document.getElementById("numP1"));
+  const cd2 = makeCountdown(document.getElementById("ringP2"), document.getElementById("numP2"));
+
+  const PHASE_INTERVALS = 10;
+  const PHASE3_ROUNDS = 4;
+
+  function readDurationInput(id){
+    const el = document.getElementById(id);
+    const n = parseInt(el.value, 10);
+    if(!Number.isFinite(n) || n < 5) return 90;
+    return Math.min(900, n);
+  }
+
+  let durationPhase1 = 90, durationPhase2 = 90, durationPhase3 = 90;
+  let currentBlockPhase = 1, interval = 1, round = 1;
+
+  function goPhaseARunning(){
+    const duration = currentBlockPhase === 1 ? durationPhase1 : durationPhase2;
+    document.getElementById("phaseAEyebrow").textContent = "Fáze " + currentBlockPhase;
+    document.getElementById("paInterval").textContent = interval;
+    showScreen("phase-a-running");
+    cd1.start(duration, onPhaseAComplete);
+  }
+  function onPhaseAComplete(){
+    playSignal();
+    if(interval < PHASE_INTERVALS){
+      interval++;
+      goPhaseARunning();
+    } else {
+      playFinish();
+      goPhaseADone();
+    }
+  }
+  function goPhaseADone(){
+    if(currentBlockPhase === 1){
+      document.getElementById("phaseADoneTitle").textContent = "Fáze 1 hotová";
+      document.getElementById("phaseADoneHint").textContent = "10× " + formatDuration(durationPhase1) + " odpípáno. Teď si zacvič a až budeš připraven, pokračuj do fáze 2.";
+      document.getElementById("phaseADoneBtn").textContent = "Pokračovat na fázi 2";
+    } else {
+      document.getElementById("phaseADoneTitle").textContent = "Fáze 2 hotová";
+      document.getElementById("phaseADoneHint").textContent = "Fáze 1 i fáze 2 jsou za tebou. Až budeš připraven na odpočinky, pokračuj do fáze 3.";
+      document.getElementById("phaseADoneBtn").textContent = "Pokračovat na fázi 3";
+    }
+    showScreen("phase-a-done");
+  }
+  document.getElementById("phaseADoneBtn").addEventListener("click", () => {
+    if(currentBlockPhase === 1){
+      currentBlockPhase = 2;
+      interval = 1;
+      goPhaseARunning();
+    } else {
+      round = 1;
+      goPhase3Wait();
+    }
+  });
+
+  function goPhase3Wait(){
+    document.getElementById("p2WaitRound").textContent = round;
+    document.getElementById("p3WaitHint").textContent = "Zacvič si daný cvik. Až skončíš, stiskni Start — spustí se odpočinek (" + formatDuration(durationPhase3) + ").";
+    showScreen("p2-wait");
+  }
+  function goPhase3Running(){
+    document.getElementById("p2Round").textContent = round;
+    showScreen("p2-running");
+    cd2.start(durationPhase3, onPhase3Complete);
+  }
+  function onPhase3Complete(){
+    playSignal();
+    if(round < PHASE3_ROUNDS){
+      round++;
+      goPhase3Wait();
+    } else {
+      playFinish();
+      showScreen("done");
+    }
+  }
+
+  document.getElementById("startBtn").addEventListener("click", () => {
+    initAudio(); requestWakeLock();
+    durationPhase1 = readDurationInput("phase1DurationInput");
+    durationPhase2 = readDurationInput("phase2DurationInput");
+    durationPhase3 = readDurationInput("phase3DurationInput");
+    currentBlockPhase = 1; interval = 1;
+    goPhaseARunning();
+  });
+  document.getElementById("startRestBtn").addEventListener("click", () => {
+    goPhase3Running();
+  });
+  document.getElementById("pauseBtn1").addEventListener("click", (e) => cd1.togglePause(e.target));
+  document.getElementById("pauseBtn2").addEventListener("click", (e) => cd2.togglePause(e.target));
+
+  document.getElementById("modePlanBtn").addEventListener("click", () => showScreen("start"));
+  document.getElementById("modeSimpleBtn").addEventListener("click", () => showScreen("simple-setup"));
+  document.getElementById("modeLegsBtn").addEventListener("click", () => showScreen("legs-intro"));
+  document.getElementById("backToSelectFromLegsIntroBtn").addEventListener("click", () => showScreen("select"));
+  document.getElementById("backToSelectFromStartBtn").addEventListener("click", () => showScreen("select"));
+  document.getElementById("backToSelectFromSetupBtn").addEventListener("click", () => showScreen("select"));
+  document.getElementById("backToSelectFromLegsABtn").addEventListener("click", () => showScreen("select"));
+
+  function makeDurationPicker(gridId, initial, customInputId){
+    const grid = document.getElementById(gridId);
+    const customInput = customInputId ? document.getElementById(customInputId) : null;
+    let value = initial;
+    function select(v){
+      value = v;
+      grid.querySelectorAll(".duration-btn").forEach(b => {
+        b.classList.toggle("selected", Number(b.dataset.duration) === v);
+      });
+      if(customInput) customInput.classList.remove("selected");
+    }
+    function selectCustom(v){
+      value = v;
+      grid.querySelectorAll(".duration-btn").forEach(b => b.classList.remove("selected"));
+      customInput.classList.add("selected");
+    }
+    grid.querySelectorAll(".duration-btn").forEach(b => {
+      b.addEventListener("click", () => {
+        if(customInput) customInput.value = "";
+        select(Number(b.dataset.duration));
+      });
+    });
+    if(customInput){
+      customInput.addEventListener("input", () => {
+        const n = parseInt(customInput.value, 10);
+        if(Number.isFinite(n) && n >= 5){
+          selectCustom(Math.min(900, n));
+        }
+      });
+    }
+    select(initial);
+    return { get value(){ return value; } };
+  }
+
+  const simplePicker = makeDurationPicker("durationGrid", 90, "durationCustomInput");
+  const legsAPicker = makeDurationPicker("durationGridLegsA", 90, "durationCustomInputLegsA");
+  const legsBPicker = makeDurationPicker("durationGridLegsB", 90, "durationCustomInputLegsB");
+
+  let simpleCount = 0;
+
+  const cdSimple = makeCountdown(document.getElementById("ringSimple"), document.getElementById("numSimple"), formatClock);
+
+  function runSimpleInterval(){
+    document.getElementById("simpleCount").textContent = simpleCount;
+    cdSimple.start(simplePicker.value, () => {
+      playSignal();
+      simpleCount++;
+      runSimpleInterval();
+    });
+  }
+  document.getElementById("startSimpleBtn").addEventListener("click", () => {
+    initAudio(); requestWakeLock();
+    simpleCount = 0;
+    document.getElementById("simpleDurationLabel").textContent = formatDuration(simplePicker.value);
+    showScreen("simple-running");
+    runSimpleInterval();
+  });
+  document.getElementById("pauseBtnSimple").addEventListener("click", (e) => cdSimple.togglePause(e.target));
+  document.getElementById("stopSimpleBtn").addEventListener("click", () => {
+    cdSimple.stop();
+    showScreen("simple-setup");
+  });
+
+  const EXERCISES = {
+    drep: { name: "Dřep", verb: "dřep", reps: 4 },
+    mrtvola: { name: "Mrtvola", verb: "mrtvý tah", reps: 5 }
+  };
+  let slotA = "drep", slotB = "mrtvola";
+  let legsARep = 1, legsBRep = 1;
+
+  const cdLegsA = makeCountdown(document.getElementById("ringLegsA"), document.getElementById("numLegsA"));
+  const cdLegsB = makeCountdown(document.getElementById("ringLegsB"), document.getElementById("numLegsB"));
+
+  function setupLegsOrder(firstKey){
+    slotA = firstKey;
+    slotB = firstKey === "drep" ? "mrtvola" : "drep";
+    const a = EXERCISES[slotA], b = EXERCISES[slotB];
+    document.getElementById("legsASetupEyebrow").textContent = "Trénink nohou · " + a.name;
+    document.getElementById("legsASetupHint").textContent = "Zvol délku intervalu pro " + a.verb + " (" + a.reps + "×).";
+    document.getElementById("startLegsABtn").textContent = "Start — " + a.name;
+    document.getElementById("legsAWaitEyebrow").textContent = a.name;
+    document.getElementById("legsAWaitTotal").textContent = a.reps;
+    document.getElementById("legsARunningEyebrow").textContent = a.name;
+    document.getElementById("legsATotal").textContent = a.reps;
+    document.getElementById("legsBSetupEyebrow").textContent = "Trénink nohou · " + b.name;
+    document.getElementById("legsBSetupHint").textContent = a.name + " hotový. Zvol délku intervalu pro " + b.verb + " (" + b.reps + "×).";
+    document.getElementById("startLegsBBtn").textContent = "Start — " + b.name;
+    document.getElementById("legsBWaitEyebrow").textContent = b.name;
+    document.getElementById("legsBWaitTotal").textContent = b.reps;
+    document.getElementById("legsBRunningEyebrow").textContent = b.name;
+    document.getElementById("legsBTotal").textContent = b.reps;
+    showScreen("legs-a-setup");
+  }
+  document.getElementById("legsOrderDrepFirstBtn").addEventListener("click", () => setupLegsOrder("drep"));
+  document.getElementById("legsOrderMrtvolaFirstBtn").addEventListener("click", () => setupLegsOrder("mrtvola"));
+
+  function goLegsAWait(){
+    const a = EXERCISES[slotA];
+    document.getElementById("legsAWaitRep").textContent = legsARep;
+    document.getElementById("legsAWaitHint").textContent = "Zacvič si " + a.verb + ". Až skončíš, stiskni Start — spustí se pauza (" + formatDuration(legsAPicker.value) + ").";
+    showScreen("legs-a-wait");
+  }
+  function goLegsARunning(){
+    document.getElementById("legsARep").textContent = legsARep;
+    showScreen("legs-a-running");
+    cdLegsA.start(legsAPicker.value, () => {
+      playSignal();
+      if(legsARep < EXERCISES[slotA].reps){
+        legsARep++;
+        goLegsAWait();
+      } else {
+        playFinish();
+        legsBRep = 1;
+        showScreen("legs-b-setup");
+      }
+    });
+  }
+  document.getElementById("startLegsABtn").addEventListener("click", () => {
+    initAudio(); requestWakeLock();
+    legsARep = 1;
+    goLegsAWait();
+  });
+  document.getElementById("startLegsARestBtn").addEventListener("click", () => {
+    goLegsARunning();
+  });
+  document.getElementById("pauseBtnLegsA").addEventListener("click", (e) => cdLegsA.togglePause(e.target));
+
+  function goLegsBWait(){
+    const b = EXERCISES[slotB];
+    document.getElementById("legsBWaitRep").textContent = legsBRep;
+    document.getElementById("legsBWaitHint").textContent = "Zacvič si " + b.verb + ". Až skončíš, stiskni Start — spustí se pauza (" + formatDuration(legsBPicker.value) + ").";
+    showScreen("legs-b-wait");
+  }
+  function goLegsBRunning(){
+    document.getElementById("legsBRep").textContent = legsBRep;
+    showScreen("legs-b-running");
+    cdLegsB.start(legsBPicker.value, () => {
+      playSignal();
+      if(legsBRep < EXERCISES[slotB].reps){
+        legsBRep++;
+        goLegsBWait();
+      } else {
+        playFinish();
+        showScreen("legs-done");
+      }
+    });
+  }
+  document.getElementById("startLegsBBtn").addEventListener("click", () => {
+    legsBRep = 1;
+    goLegsBWait();
+  });
+  document.getElementById("startLegsBRestBtn").addEventListener("click", () => {
+    goLegsBRunning();
+  });
+  document.getElementById("pauseBtnLegsB").addEventListener("click", (e) => cdLegsB.togglePause(e.target));
+  document.getElementById("legsRestartBtn").addEventListener("click", fullReset);
+
+  function fullReset(){
+    cd1.stop(); cd2.stop(); cdSimple.stop(); cdLegsA.stop(); cdLegsB.stop();
+    currentBlockPhase = 1; interval = 1; round = 1; simpleCount = 0; legsARep = 1; legsBRep = 1;
+    document.getElementById("pauseBtn1").textContent = "Pauza";
+    document.getElementById("pauseBtn2").textContent = "Pauza";
+    document.getElementById("pauseBtnSimple").textContent = "Pauza";
+    document.getElementById("pauseBtnLegsA").textContent = "Pauza";
+    document.getElementById("pauseBtnLegsB").textContent = "Pauza";
+    showScreen("select");
+  }
+  document.getElementById("resetBtn").addEventListener("click", fullReset);
+  document.getElementById("restartBtn").addEventListener("click", fullReset);
+
+  showScreen("select");
+</script>
